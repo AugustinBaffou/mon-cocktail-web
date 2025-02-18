@@ -8,12 +8,14 @@ import NavBar from "./components/NavBar";
 const App: React.FC = () => {
   return (
     <Router>
-      <NavBar />
+      <div className="min-h-screen flex flex-col bg-background">
+        <NavBar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/recipes" element={<Recipes />} />
           <Route path="/surprise" element={<Surprise />} />
         </Routes>
+      </div>
     </Router>
   );
 };

@@ -5,7 +5,7 @@ const Home: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center">
+    <div className="grow bg-background flex items-center justify-center">
       <div className="p-8 rounded-2xl w-full max-w-md">
         <h1 className="text-5xl font-bold text-primary">Mon Cocktail</h1>
         <p className="text-xl italic text-secondary mt-2">L’assistant de votre bar</p>
