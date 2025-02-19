@@ -36,6 +36,4 @@ public class User {
     @Column(nullable = false)
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-
-    // Getters et setters
 }
