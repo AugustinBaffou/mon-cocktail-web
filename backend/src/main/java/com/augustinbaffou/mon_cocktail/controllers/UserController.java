@@ -14,23 +14,29 @@ import com.augustinbaffou.mon_cocktail.services.UserService;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.util.List;
+
+@RequestMapping("/users")
 @RestController
-@RequestMapping("/api/users")
-@RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-
-    @GetMapping("/{email}")
-    public ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email) {
-        return userService.findByEmail(email)
-                .map(userDTO -> ResponseEntity.ok(userDTO))
-                .orElse(ResponseEntity.notFound().build());
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
-    @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
-        User savedUser = userService.saveUser(userDTO);
-        UserDTO responseDTO = new UserDTO(savedUser.getId(), savedUser.getEmail(), savedUser.getName());
-        return ResponseEntity.ok(responseDTO);
+    @GetMapping("/me")
+    public ResponseEntity<User> authenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
+        return ResponseEntity.ok(currentUser);
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<List<User>> allUsers() {
+        List <User> users = userService.allUsers();
+        return ResponseEntity.ok(users);
     }
 }

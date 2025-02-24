@@ -10,5 +10,6 @@ import com.augustinbaffou.mon_cocktail.entities.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
-    User findByName(String name);
+    Optional<User> findByVerificationCode(String verificationCode);
+    Optional<User> findByUsername(String username);
 }
