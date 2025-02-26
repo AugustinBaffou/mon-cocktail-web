@@ -60,9 +60,10 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("https://app-backend.com", "http://localhost:8080")); //TODO: update backend url
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
-        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        configuration.setAllowedOrigins(List.of("*")); // Autoriser toutes les origines
+        configuration.setAllowedMethods(List.of("*")); // Autoriser toutes les méthodes
+        configuration.setAllowedHeaders(List.of("*")); // Autoriser tous les en-têtes
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource(); 
         source.registerCorsConfiguration("/**", configuration);

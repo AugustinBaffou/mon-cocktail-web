@@ -4,6 +4,9 @@ import Recipes from "./pages/Recipes";
 import Home from "./pages/Home";
 import Surprise from "./pages/Surprise";
 import NavBar from "./components/NavBar";
+import Register from "./pages/Register";
+import Verification from "./pages/Verification";
+import Login from "./pages/Login";
 
 const App: React.FC = () => {
   return (
@@ -14,6 +17,9 @@ const App: React.FC = () => {
           <Route path="/" element={<Home />} />
           <Route path="/recipes" element={<Recipes />} />
           <Route path="/surprise" element={<Surprise />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/verify" element={<Verification />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </div>
     </Router>
