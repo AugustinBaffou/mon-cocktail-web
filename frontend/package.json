@@ -13,6 +13,7 @@
     "axios": "^1.8.1",
     "frontend": "file:",
     "js-cookie": "^3.0.5",
+    "lucide-react": "^0.476.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.1.5"

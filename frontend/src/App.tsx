@@ -7,6 +7,7 @@ import NavBar from "./components/NavBar";
 import Register from "./pages/Register";
 import Verification from "./pages/Verification";
 import Login from "./pages/Login";
+import CocktailDetail from "./pages/CocktailPage";
 
 const App: React.FC = () => {
   return (
@@ -20,6 +21,7 @@ const App: React.FC = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/verify" element={<Verification />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/cocktail" element={<CocktailDetail />} />
         </Routes>
       </div>
     </Router>
