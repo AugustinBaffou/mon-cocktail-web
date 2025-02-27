@@ -1,10 +1,10 @@
 package com.augustinbaffou.mon_cocktail.controllers;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 
+import org.springframework.http.ResponseEntity;
+
+import com.augustinbaffou.mon_cocktail.entities.Role;
 import com.augustinbaffou.mon_cocktail.entities.User;
 import com.augustinbaffou.mon_cocktail.services.UserService;
 
@@ -12,12 +12,14 @@ import com.augustinbaffou.mon_cocktail.services.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.List;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/users")
 @RestController
+@RequestMapping("/users")
 public class UserController {
     private final UserService userService;
+
     public UserController(UserService userService) {
         this.userService = userService;
     }
@@ -31,7 +33,21 @@ public class UserController {
 
     @GetMapping("/")
     public ResponseEntity<List<User>> allUsers() {
-        List <User> users = userService.allUsers();
+        List<User> users = userService.allUsers();
         return ResponseEntity.ok(users);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/{email}/make-admin")
+    public ResponseEntity<String> makeUserAdmin(@PathVariable String email) {
+        userService.addRoleToUser(email, Role.ADMIN);
+        return ResponseEntity.ok("User promoted to admin");
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{email}")
+    public ResponseEntity<String> deleteUser(@PathVariable String email) {
+        userService.deleteUser(email);
+        return ResponseEntity.ok("User deleted");
     }
 }

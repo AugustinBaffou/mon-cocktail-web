@@ -67,7 +67,9 @@ public class UserService {
     }
     
     @Transactional
-    public void deleteUser(Long userId) {
-        userRepository.deleteById(userId);
+    public void deleteUser(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+        userRepository.deleteById(user.getId());
     }
 }
