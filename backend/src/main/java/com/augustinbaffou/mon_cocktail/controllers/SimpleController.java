@@ -20,7 +20,7 @@ public class SimpleController {
         return ResponseEntity.ok("Hello Admin");
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/user")
     public ResponseEntity<String> helloUser(){
         return ResponseEntity.ok("Hello User");

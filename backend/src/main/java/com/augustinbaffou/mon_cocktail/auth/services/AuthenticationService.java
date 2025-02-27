@@ -8,12 +8,14 @@ import org.springframework.stereotype.Service;
 import com.augustinbaffou.mon_cocktail.auth.dtos.LoginUserDto;
 import com.augustinbaffou.mon_cocktail.auth.dtos.RegisterUserDto;
 import com.augustinbaffou.mon_cocktail.auth.dtos.VerifyUserDto;
+import com.augustinbaffou.mon_cocktail.entities.Role;
 import com.augustinbaffou.mon_cocktail.entities.User;
 import com.augustinbaffou.mon_cocktail.repositories.UserRepository;
 
 import jakarta.mail.MessagingException;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -42,6 +44,7 @@ public class AuthenticationService {
         user.setVerificationCode(generateVerificationCode());
         user.setVerificationCodeExpiresAt(LocalDateTime.now().plusMinutes(15));
         user.setEnabled(true);
+        user.addRole(Role.USER);
         return userRepository.save(user);
     }
 
@@ -50,6 +53,7 @@ public class AuthenticationService {
         user.setVerificationCode(generateVerificationCode());
         user.setVerificationCodeExpiresAt(LocalDateTime.now().plusMinutes(15));
         user.setEnabled(false);
+        user.addRole(Role.USER);
         sendVerificationEmail(user);
         return userRepository.save(user);
     }
