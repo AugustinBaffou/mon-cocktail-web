@@ -34,6 +34,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/auth/**").permitAll()
                         .anyRequest().authenticated()
@@ -60,12 +61,12 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("*")); // Autoriser toutes les origines
-        configuration.setAllowedMethods(List.of("*")); // Autoriser toutes les méthodes
-        configuration.setAllowedHeaders(List.of("*")); // Autoriser tous les en-têtes
+        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Autoriser uniquement votre frontend local
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE")); // Autoriser uniquement les méthodes nécessaires
+        configuration.setAllowedHeaders(List.of("Content-Type", "Authorization")); // Autoriser uniquement les en-têtes nécessaires
         configuration.setAllowCredentials(true);
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource(); 
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
