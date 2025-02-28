@@ -25,16 +25,12 @@ const Verification: React.FC = () => {
     }
 
     try {
-      // Envoyer le code de vérification au backend
       const response = await axios.post("http://localhost:8080/auth/verify", {
         email,
         verificationCode,
       });
 
-      // Traitez la réponse du serveur
       console.log("Vérification réussie:", response.data);
-
-      // Rediriger l'utilisateur vers une autre page, par exemple la page de connexion
       navigate("/login", { state: { verified: true } });
     } catch (error) {
       console.error("Erreur lors de la vérification:", error);
@@ -49,11 +45,9 @@ const Verification: React.FC = () => {
     }
 
     setIsResending(true);
-    
+
     try {
-      // Appel API pour renvoyer le code de vérification
-      await axios.post("http://localhost:8080/auth/resend-verification", { email });
-      alert("Un nouveau code de vérification a été envoyé à votre adresse email.");
+      await axios.post("http://localhost:8080/auth/resend", null, { params: { email }});
     } catch (error) {
       console.error("Erreur lors du renvoi du code:", error);
       setError("Impossible de renvoyer le code. Veuillez réessayer plus tard.");
@@ -65,7 +59,6 @@ const Verification: React.FC = () => {
   return (
     <div className="grow bg-background flex items-center justify-center">
       <div className="p-8 rounded-2xl w-full max-w-md">
-        {/* Titre et sous-titre */}
         <div className="text-center mb-8">
           <div className="h-16 w-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle size={28} className="text-white" />
@@ -80,8 +73,7 @@ const Verification: React.FC = () => {
             </p>
           </div>
         </div>
-        
-        {/* Formulaire */}
+
         <form onSubmit={handleSubmit} className="mt-8 bg-white p-6 rounded-xl shadow-md">
           <div className="mb-5">
             <label
@@ -101,20 +93,20 @@ const Verification: React.FC = () => {
               maxLength={6}
             />
           </div>
-          
+
           {error && (
             <div className="p-4 mb-5 text-sm text-red-800 rounded-lg bg-red-50">
               <span className="font-medium">Erreur :</span> {error}
             </div>
           )}
-          
+
           <button
             type="submit"
             className="w-full text-white bg-primary hover:bg-opacity-90 focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-3 text-center transition shadow-md"
           >
             Vérifier mon compte
           </button>
-          
+
           <div className="mt-4 text-center">
             <button
               type="button"
@@ -136,8 +128,7 @@ const Verification: React.FC = () => {
             </button>
           </div>
         </form>
-        
-        {/* Décoration du bas */}
+
         <div className="mt-8 flex justify-center gap-2">
           <div className="h-2 w-2 rounded-full bg-green"></div>
           <div className="h-2 w-2 rounded-full bg-orange"></div>
