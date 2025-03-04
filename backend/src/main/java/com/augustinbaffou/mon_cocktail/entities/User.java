@@ -28,10 +28,16 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    @Column(name = "reset_code")
+    private String resetCode;
+    @Column(name = "reset_code_expires_at")
+    private LocalDateTime resetCodeExpiresAt;
+
     @Column(name = "verification_code")
     private String verificationCode;
     @Column(name = "verification_expiration")
     private LocalDateTime verificationCodeExpiresAt;
+
     private boolean enabled;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
