@@ -112,6 +112,7 @@ const Navbar: React.FC = () => {
         <div className="w-full bg-gradient-to-r from-primary to-secondary h-2"></div>
       </nav>
       
+      
       {/* Menu mobile */}
       {isMenuOpen && (
         <div className="fixed inset-0 z-40 bg-primary pt-16 md:hidden">

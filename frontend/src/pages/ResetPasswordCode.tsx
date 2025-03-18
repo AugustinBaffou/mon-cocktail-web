@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { RefreshCw, Key, Mail } from "lucide-react";
+import DotsSeparator from "../components/DotsSeparator";
 
 const PasswordResetRequest: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -99,11 +100,7 @@ const PasswordResetRequest: React.FC = () => {
           </div>
         </form>
 
-        <div className="mt-8 flex justify-center gap-2">
-          <div className="h-2 w-2 rounded-full bg-green"></div>
-          <div className="h-2 w-2 rounded-full bg-orange"></div>
-          <div className="h-2 w-2 rounded-full bg-secondary"></div>
-        </div>
+        <DotsSeparator />
       </div>
     </div>
   );

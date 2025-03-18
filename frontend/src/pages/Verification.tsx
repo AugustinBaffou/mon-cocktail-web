@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CheckCircle, Mail, RefreshCw } from "lucide-react";
+import DotsSeparator from "../components/DotsSeparator";
 
 const Verification: React.FC = () => {
   const [verificationCode, setVerificationCode] = useState("");
@@ -129,11 +130,7 @@ const Verification: React.FC = () => {
           </div>
         </form>
 
-        <div className="mt-8 flex justify-center gap-2">
-          <div className="h-2 w-2 rounded-full bg-green"></div>
-          <div className="h-2 w-2 rounded-full bg-orange"></div>
-          <div className="h-2 w-2 rounded-full bg-secondary"></div>
-        </div>
+        <DotsSeparator />
       </div>
     </div>
   );

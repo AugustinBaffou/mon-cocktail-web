@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Martini, Search, Sparkles } from "lucide-react";
+import DotsSeparator from "../components/DotsSeparator";
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -49,12 +50,7 @@ const Home: React.FC = () => {
           </button>
         </div>
         
-        {/* Décoration du bas */}
-        <div className="mt-12 flex justify-center gap-2">
-          <div className="h-2 w-2 rounded-full bg-green"></div>
-          <div className="h-2 w-2 rounded-full bg-orange"></div>
-          <div className="h-2 w-2 rounded-full bg-secondary"></div>
-        </div>
+        <DotsSeparator />
       </div>
     </div>
   );

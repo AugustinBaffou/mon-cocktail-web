@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { LogIn, Mail, Key } from "lucide-react";
+import DotsSeparator from "../components/DotsSeparator";
 
 const Login: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -136,12 +137,7 @@ const Login: React.FC = () => {
           </div>
         </form>
         
-        {/* Décoration du bas */}
-        <div className="mt-8 flex justify-center gap-2">
-          <div className="h-2 w-2 rounded-full bg-green"></div>
-          <div className="h-2 w-2 rounded-full bg-orange"></div>
-          <div className="h-2 w-2 rounded-full bg-secondary"></div>
-        </div>
+        <DotsSeparator />
       </div>
     </div>
   );
