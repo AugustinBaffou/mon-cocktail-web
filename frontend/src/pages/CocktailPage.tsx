@@ -1,153 +1,250 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
-import { ChevronLeft, Clock, GlassWater, ThumbsUp, Share2, Bookmark, PlusCircle } from "lucide-react";
+import { 
+  Clock, 
+  Star, 
+  ArrowLeft, 
+  Plus, 
+  Minus
+} from "lucide-react";
 import { Link } from "react-router-dom";
 
-// Cette page est une maquette statique, les données seraient normalement récupérées via API
 const CocktailDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
-  const [isSaved, setIsSaved] = useState(false);
+  const [servings, setServings] = useState(1);
+  const [unit, setUnit] = useState<'oz' | 'cl' | 'part'>('oz');
 
-  // Données mockées pour le Gin Tonic
   const cocktail = {
-    id: 1,
     name: "Gin Tonic",
     emoji: "🍸",
-    description: "Un classique rafraîchissant, parfait pour les soirées d'été. Le mélange d'arômes botaniques du gin avec l'amertume légère du tonic crée un équilibre parfait.",
-    serviceDescription: "Servir dans un verre highball avec des glaçons.",
-    preparationDetails: "1. Remplir un verre highball de glaçons\n2. Verser le gin\n3. Compléter avec le tonic\n4. Remuer délicatement\n5. Garnir d'une rondelle de citron",
+    description: "Un classique rafraîchissant qui allie la simplicité à l'élégance.",
+    serviceDescription: "Servir dans un verre highball avec glaçons.",
+    preparationDetails: "Mélanger le gin et le tonic sur glace, ajouter une rondelle de citron.",
     ingredients: [
-      { id: 1, name: "Gin", quantity: 2.0, parent: { id: 2, name: "London Dry Gin" } },
-      { id: 4, name: "Lemon", quantity: 0.5, parent: null },
-      { id: 7, name: "Schweppes Tonic", quantity: 3.0, parent: null }
+      { 
+        name: "Gin", 
+        quantity: 2, 
+        baseQuantity: 2,
+        unit: "oz",
+        parent: "London Dry Gin"
+      },
+      { 
+        name: "Schweppes Tonic", 
+        quantity: 3, 
+        baseQuantity: 3,
+        unit: "oz"
+      },
+      { 
+        name: "Citron", 
+        quantity: 0.5, 
+        baseQuantity: 0.5,
+        unit: "oz",
+        role: "Garniture"
+      }
     ],
+    preparationSteps: [
+      "Remplir un verre highball de glaçons",
+      "Verser le gin sur les glaçons",
+      "Ajouter le tonic water",
+      "Presser un quartier de citron et décorer"
+    ],
+    nutritionalInfo: {
+      calories: 180,
+      alcohol: "14%",
+      sugar: "5g"
+    },
     types: [
-      { id: 1, name: "À base de gin", emoji: "🍸", category: "Par base alcoolique principale" },
-      { id: 5, name: "Long drink", emoji: "🥤", category: "Par présentation" },
-      { id: 9, name: "Modéré", emoji: "🟡", category: "Par force alcoolique" },
-      { id: 30, name: "Désaltérant", emoji: "💦", category: "Par effet recherché" }
+      { name: "À base de gin", emoji: "🍸" },
+      { name: "Long drink", emoji: "🥤" }
     ],
-    timeToMake: "5 minutes",
-    difficulty: "Facile"
+    preparationTime: 5,
+    difficulty: 1
   };
 
-  const toggleSave = () => {
-    setIsSaved(!isSaved);
+  // Fonction pour convertir les unités
+  const convertUnit = (value: number, fromUnit: string, toUnit: string) => {
+    // Conversion simplifiée (à adapter selon vos besoins précis)
+    const conversionRates = {
+      'oz_to_cl': 29.5735,
+      'cl_to_oz': 1 / 29.5735,
+      'oz_to_part': 1,
+      'part_to_oz': 1
+    };
+
+    const key = `${fromUnit}_to_${toUnit}` as keyof typeof conversionRates;
+    return value * (conversionRates[key] || 1);
   };
+
+  // Mise à jour des quantités en fonction des servings et de l'unité
+  const updatedIngredients = cocktail.ingredients.map(ing => ({
+    ...ing,
+    quantity: +(convertUnit(
+      convertUnit(ing.baseQuantity, ing.unit, 'oz') * servings, 
+      'oz', 
+      unit
+    ).toFixed(2))
+  }));
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      {/* Header avec bouton retour */}
-      <div className="bg-primary text-white p-4 flex items-center sticky top-0 z-10">
-        <Link to="/recipes" className="flex items-center">
-          <ChevronLeft size={24} />
-          <span className="ml-2">Retour aux recettes</span>
-        </Link>
-      </div>
-
-      {/* Image avec overlay */}
-      <div className="relative w-full h-64 md:h-80 bg-primary">
-        {/* Remplacer par une image réelle quand disponible */}
-        <div className="absolute inset-0 flex items-center justify-center bg-primary bg-opacity-80 text-white rounded-3xl">
-          <span className="text-8xl">{cocktail.emoji}</span>
-        </div>
-        <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-primary to-transparent rounded-3xl">
-          <h1 className="text-3xl font-bold text-white">{cocktail.name}</h1>
-        </div>
-      </div>
-
-      {/* Contenu principal */}
-      <div className="container mx-auto px-4 py-6 flex-grow rounded-xl">
-        {/* Actions rapides */}
-        <div className="flex justify-between mb-6">
-          <div className="flex items-center text-primary">
-            <Clock size={20} />
-            <span className="ml-2 text-sm">{cocktail.timeToMake}</span>
-            <span className="mx-2">•</span>
-            <span className="text-sm">{cocktail.difficulty}</span>
-          </div>
-          <div className="flex space-x-4">
-            <button className="text-primary hover:text-secondary transition">
-              <ThumbsUp size={20} />
-            </button>
-            <button className="text-primary hover:text-secondary transition">
-              <Share2 size={20} />
-            </button>
-            <button 
-              className={`${isSaved ? 'text-secondary' : 'text-primary'} hover:text-secondary transition`}
-              onClick={toggleSave}
-            >
-              <Bookmark size={20} fill={isSaved ? "#FB7D8A" : "none"} />
-            </button>
-          </div>
-        </div>
-
-        {/* Description */}
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold text-primary mb-2">Description</h2>
-          <p className="text-primary">{cocktail.description}</p>
-        </div>
-
-        {/* Caractéristiques */}
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold text-primary mb-2">Caractéristiques</h2>
-          <div className="flex flex-wrap gap-2">
-            {cocktail.types.map(type => (
+    <div className="bg-background min-h-screen">
+      <div className="container mx-auto px-4 py-6">
+        {/* Header de navigation */}
+        <div className="flex justify-between items-center mb-8">
+          <Link 
+            to="/recipes" 
+            className="flex items-center gap-2 text-primary hover:text-secondary transition"
+          >
+            <ArrowLeft size={24} />
+            <span className="hidden sm:inline">Retour</span>
+          </Link>
+          <div className="flex items-center gap-2">
+            {cocktail.types.map((type, index) => (
               <span 
-                key={type.id} 
-                className="inline-flex items-center bg-primary bg-opacity-10 text-primary px-3 py-1 rounded-full text-sm"
+                key={index}
+                className="text-sm bg-primary/10 text-primary px-2 py-1 rounded-full flex items-center gap-1"
               >
-                <span className="mr-1">{type.emoji}</span>
-                {type.name}
+                {type.emoji} {type.name}
               </span>
             ))}
           </div>
         </div>
 
-        {/* Ingrédients */}
-        <div className="mb-6 bg-white rounded-lg shadow-sm p-4">
-          <h2 className="text-xl font-semibold text-primary mb-4">Ingrédients</h2>
-          <ul className="divide-y divide-gray-100">
-            {cocktail.ingredients.map(ingredient => (
-              <li key={ingredient.id} className="py-3 flex justify-between items-center">
-                <div>
-                  <p className="font-medium text-primary">
-                    {ingredient.name}
-                    {ingredient.parent && (
-                      <span className="font-normal text-sm text-gray-500 block">
-                        Idéalement {ingredient.parent.name}
-                      </span>
-                    )}
-                  </p>
-                </div>
-                <div className="flex items-center">
-                  <span className="text-primary font-medium">{ingredient.quantity} oz</span>
-                  <button className="ml-4 text-green hover:text-opacity-80 transition">
-                    <PlusCircle size={20} />
+        {/* Section principale */}
+        <div className="grid md:grid-cols-2 gap-8">
+          {/* Côté gauche - Visuel */}
+          <div className="relative">
+            <div className="aspect-square bg-white rounded-2xl shadow-lg flex items-center justify-center">
+              <div className="w-64 h-64 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-full flex items-center justify-center">
+                <span className="text-8xl">{cocktail.emoji}</span>
+              </div>
+            </div>
+            
+            {/* Contrôles de servings et unités */}
+            <div className="mt-6 grid grid-cols-2 gap-4">
+              <div className="bg-white rounded-xl p-4 text-center shadow-sm">
+                <div className="flex justify-center items-center gap-4 mb-2">
+                  <button 
+                    onClick={() => setServings(Math.max(1, servings - 1))}
+                    className="bg-primary/10 text-primary p-1 rounded-full"
+                  >
+                    <Minus size={16} />
+                  </button>
+                  <span className="font-medium text-primary">{servings} pers.</span>
+                  <button 
+                    onClick={() => setServings(servings + 1)}
+                    className="bg-primary/10 text-primary p-1 rounded-full"
+                  >
+                    <Plus size={16} />
                   </button>
                 </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Préparation */}
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold text-primary mb-2">Préparation</h2>
-          <div className="bg-white rounded-lg shadow-sm p-4">
-            <p className="text-primary italic mb-4">{cocktail.serviceDescription}</p>
-            <div className="text-primary whitespace-pre-line">
-              {cocktail.preparationDetails}
+                <p className="text-xs text-gray-500">Personnes</p>
+              </div>
+              
+              <div className="bg-white rounded-xl p-4 text-center shadow-sm">
+                <div className="flex justify-center items-center gap-4 mb-2">
+                  {(['oz', 'cl', 'part'] as const).map((u) => (
+                    <button
+                      key={u}
+                      onClick={() => setUnit(u)}
+                      className={`px-2 py-1 rounded-full transition ${
+                        unit === u 
+                          ? 'bg-primary text-white' 
+                          : 'bg-primary/10 text-primary'
+                      }`}
+                    >
+                      {u}
+                    </button>
+                  ))}
+                </div>
+                <p className="text-xs text-gray-500">Unités</p>
+              </div>
+            </div>
+            
+            {/* Statistiques rapides */}
+            <div className="grid grid-cols-2 gap-4 mt-4">
+              <div className="bg-white rounded-xl p-4 text-center shadow-sm">
+                <Clock size={24} className="mx-auto text-primary mb-2" />
+                <p className="font-medium text-primary">{cocktail.preparationTime} min</p>
+                <p className="text-xs text-gray-500">Préparation</p>
+              </div>
+              <div className="bg-white rounded-xl p-4 text-center shadow-sm">
+                <Star size={24} className="mx-auto text-primary mb-2" />
+                <div className="flex justify-center">
+                  {[...Array(5)].map((_, i) => (
+                    <Star 
+                      key={i} 
+                      size={16} 
+                      className={`${i < cocktail.difficulty ? 'text-orange' : 'text-gray-300'}`}
+                      fill={i < cocktail.difficulty ? '#F1A411' : 'none'}
+                    />
+                  ))}
+                </div>
+                <p className="text-xs text-gray-500">Difficulté</p>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Appel à l'action */}
-        <div className="mt-8 flex justify-center">
-          <button className="bg-secondary text-white py-3 px-6 rounded-full flex items-center justify-center gap-2 hover:bg-opacity-90 transition shadow-md">
-            <GlassWater size={20} />
-            Préparer ce cocktail
-          </button>
+          {/* Côté droit - Détails */}
+          <div>
+            <h1 className="text-4xl font-bold text-primary mb-4">{cocktail.name}</h1>
+            <p className="text-gray-600 mb-6">{cocktail.description}</p>
+
+            {/* Ingrédients */}
+            <div className="mb-6">
+              <h2 className="text-2xl font-semibold text-primary mb-4">Ingrédients</h2>
+              {updatedIngredients.map((ingredient, index) => (
+                <div 
+                  key={index} 
+                  className="flex justify-between items-center bg-white p-4 rounded-xl mb-4 shadow-sm"
+                >
+                  <div>
+                    <p className="font-medium">{ingredient.name}</p>
+                    {ingredient.parent && (
+                      <p className="text-sm text-gray-500">
+                        Idéalement {ingredient.parent}
+                      </p>
+                    )}
+                  </div>
+                  <span className="text-primary font-semibold">
+                    {ingredient.quantity} {unit}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* Préparation */}
+            <div>
+              <h2 className="text-2xl font-semibold text-primary mb-6">Préparation</h2>
+              {cocktail.preparationSteps.map((step, index) => (
+                <div 
+                  key={index} 
+                  className="flex items-center gap-4 bg-white p-4 rounded-xl mb-4 shadow-sm"
+                >
+                  <div className="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center">
+                    {index + 1}
+                  </div>
+                  <p>{step}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Informations nutritionnelles */}
+            <div className="mt-6 bg-white p-6 rounded-xl shadow-sm">
+              <h2 className="text-xl font-semibold text-primary mb-4">Informations nutritionnelles</h2>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-primary">{cocktail.nutritionalInfo.calories}</p>
+                  <p className="text-sm text-gray-500">Calories</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-primary">{cocktail.nutritionalInfo.alcohol}</p>
+                  <p className="text-sm text-gray-500">Alcool</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-primary">{cocktail.nutritionalInfo.sugar}</p>
+                  <p className="text-sm text-gray-500">Sucre</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
