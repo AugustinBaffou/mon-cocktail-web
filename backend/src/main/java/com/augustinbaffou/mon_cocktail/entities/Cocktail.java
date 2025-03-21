@@ -3,6 +3,8 @@ package com.augustinbaffou.mon_cocktail.entities;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -14,8 +16,12 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "cocktails")
 public class Cocktail {
     @Id
@@ -35,9 +41,11 @@ public class Cocktail {
     private String sugar;
 
     @OneToMany(mappedBy = "cocktail", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<PreparationStep> preparationSteps = new ArrayList<>();
 
     @OneToMany(mappedBy = "cocktail", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Tip> tips = new ArrayList<>();
 
     @ManyToMany
@@ -57,5 +65,6 @@ public class Cocktail {
     private List<Type> types = new ArrayList<>();
 
     @OneToMany(mappedBy = "cocktail", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Variant> variants = new ArrayList<>();
 }

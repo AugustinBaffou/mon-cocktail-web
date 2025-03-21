@@ -1,6 +1,5 @@
 package com.augustinbaffou.mon_cocktail.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,7 +12,7 @@ import com.augustinbaffou.mon_cocktail.services.CocktailService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/cocktails")
+@RequestMapping("/public/cocktails")
 public class CocktailController {
     private final CocktailService cocktailService;
 
