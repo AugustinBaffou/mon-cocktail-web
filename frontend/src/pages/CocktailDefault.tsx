@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
 import {
   Clock,
   Star,
@@ -14,9 +13,8 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const CocktailDetail: React.FC = () => {
+const CocktailDefault: React.FC = () => {
   const [servings, setServings] = useState(1);
-  const { id } = useParams(); // Récupère l'id du cocktail depuis l'URL
   const [unit, setUnit] = useState<"oz" | "cl" | "part">("oz");
   const [isFavorite, setIsFavorite] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
@@ -97,12 +95,12 @@ const CocktailDetail: React.FC = () => {
   const convertUnit = (value: number, fromUnit: string, toUnit: string) => {
     // Conversion simplifiée (à adapter selon vos besoins précis)
     const conversionRates = {
-      oz_to_cl: 30 / 10,
-      cl_to_oz: 10 / 30,
+      oz_to_cl: 29.5735 / 10,
+      cl_to_oz: 10 / 29.5735,
       oz_to_part: 1,
       part_to_oz: 1,
-      cl_to_part: 10 / 30,
-      part_to_cl: 30 / 10,
+      cl_to_part: 10 / 29.5735,
+      part_to_cl: 29.5735 / 10,
     };
 
     const key = `${fromUnit}_to_${toUnit}` as keyof typeof conversionRates;
@@ -191,7 +189,7 @@ const CocktailDetail: React.FC = () => {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
           <div>
             <h1 className="text-4xl font-bold text-primary mb-2">
-              [{id}] {cocktail.name} 
+              {cocktail.name}
             </h1>
             <p className="text-gray-600">{cocktail.description}</p>
           </div>
@@ -532,4 +530,4 @@ const CocktailDetail: React.FC = () => {
   );
 };
 
-export default CocktailDetail;
+export default CocktailDefault;
