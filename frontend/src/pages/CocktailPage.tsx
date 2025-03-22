@@ -13,6 +13,62 @@ import {
   Leaf,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import DotsLoading from "../components/DotsLoading";
+
+// Interface pour typer les données de l'API
+interface Ingredient {
+  id: number;
+  name: string;
+  parent: string | null;
+  quantity?: number;
+  baseQuantity?: number;
+  unit?: string;
+  role?: string;
+  style?: string;
+}
+
+interface PreparationStep {
+  id: number;
+  stepOrder: number;
+  description: string;
+}
+
+interface Tip {
+  id: number;
+  tip: string;
+}
+
+interface Type {
+  id: number;
+  name: string;
+  emoji: string;
+}
+
+interface Variant {
+  id?: number;
+  name: string;
+  description: string;
+}
+
+interface Cocktail {
+  id: number;
+  name: string;
+  emoji: string;
+  imageUrl: string;
+  description: string;
+  serviceDescription: string;
+  preparationTime: number;
+  difficulty: number;
+  pairing: string;
+  calories: number;
+  alcoholPercentage: string;
+  sugar: string;
+  preparationSteps: PreparationStep[];
+  tips: Tip[];
+  ingredients: Ingredient[];
+  types: Type[];
+  variants: Variant[];
+}
 
 const CocktailDetail: React.FC = () => {
   const [servings, setServings] = useState(1);
@@ -23,79 +79,14 @@ const CocktailDetail: React.FC = () => {
   const [activeTab, setActiveTab] = useState<
     "ingredients" | "preparation" | "tips"
   >("ingredients");
+  
+  // Nouveaux états pour l'API
+  const [cocktail, setCocktail] = useState<Cocktail | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const cocktail = {
-    name: "Gin Tonic",
-    emoji: "🍸",
-    description:
-      "Un classique rafraîchissant qui allie la simplicité à l'élégance.",
-    serviceDescription: "Servir dans un verre highball avec glaçons.",
-    preparationDetails:
-      "Mélanger le gin et le tonic sur glace, ajouter une rondelle de citron.",
-    ingredients: [
-      {
-        name: "Gin",
-        quantity: 2,
-        baseQuantity: 2,
-        unit: "oz",
-        parent: "London Dry Gin",
-      },
-      {
-        name: "Schweppes Tonic",
-        quantity: 3,
-        baseQuantity: 3,
-        unit: "oz",
-      },
-      {
-        name: "Citron",
-        quantity: 1,
-        baseQuantity: 1,
-        unit: "pièce", // Changé de "oz" à "pièce"
-        role: "Garniture",
-        style: "rondelle", // Nouvelle propriété pour le style de présentation
-      },
-    ],
-    preparationSteps: [
-      "Remplir un verre highball de glaçons",
-      "Verser le gin sur les glaçons",
-      "Ajouter le tonic water",
-      "Presser un quartier de citron et décorer",
-    ],
-    nutritionalInfo: {
-      calories: 180,
-      alcohol: "14%",
-      sugar: "5g",
-    },
-    types: [
-      { name: "À base de gin", emoji: "🍸" },
-      { name: "Long drink", emoji: "🥤" },
-    ],
-    preparationTime: 5,
-    difficulty: 1,
-    tips: [
-      "Utilisez des glaçons de qualité pour une dilution optimale",
-      "Privilégiez un gin aux notes botaniques prononcées pour plus de caractère",
-      "Pressez le citron juste avant de servir pour préserver sa fraîcheur",
-    ],
-    variants: [
-      {
-        name: "Gin Tonic au concombre",
-        description:
-          "Ajoutez quelques tranches de concombre pour une version rafraîchissante",
-      },
-      {
-        name: "Gin Tonic à la baie de genièvre",
-        description:
-          "Écrasez quelques baies de genièvre pour accentuer les arômes du gin",
-      },
-    ],
-    pairing:
-      "Idéal avec des tapas, des fruits de mer ou des amuse-bouches légers",
-  };
-
-  // Fonction pour convertir les unités
+  // Fonction pour convertir les unités (inchangée)
   const convertUnit = (value: number, fromUnit: string, toUnit: string) => {
-    // Conversion simplifiée (à adapter selon vos besoins précis)
     const conversionRates = {
       oz_to_cl: 30 / 10,
       cl_to_oz: 10 / 30,
@@ -109,19 +100,9 @@ const CocktailDetail: React.FC = () => {
     return value * (conversionRates[key] || 1);
   };
 
-  // Mise à jour des quantités en fonction des servings et de l'unité
-  const updatedIngredients = cocktail.ingredients.map((ing) => ({
-    ...ing,
-    quantity: +convertUnit(
-      convertUnit(ing.baseQuantity, ing.unit, "oz") * servings,
-      "oz",
-      unit
-    ).toFixed(2),
-  }));
-
   // Fonction pour partager la recette
   const shareRecipe = () => {
-    if (navigator.share) {
+    if (navigator.share && cocktail) {
       navigator.share({
         title: `Recette de ${cocktail.name}`,
         text: `Découvrez comment préparer un délicieux ${cocktail.name}`,
@@ -133,7 +114,29 @@ const CocktailDetail: React.FC = () => {
     }
   };
 
-  // Simulation de chargement des données utilisateur
+  // Charger les données du cocktail depuis l'API
+  useEffect(() => {
+    const fetchCocktail = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(`http://localhost:8080/public/cocktails/${id}`);
+        if (!response.ok) {
+          throw new Error(`Erreur HTTP ${response.status}`);
+        }
+        const data = await response.json();
+        setCocktail(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Une erreur est survenue");
+        console.error("Erreur lors du chargement du cocktail:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCocktail();
+  }, [id]);
+
+  // Chargement des préférences utilisateur (similaire à avant)
   useEffect(() => {
     // Ici, vous pourriez charger les préférences utilisateur depuis une API
     setTimeout(() => {
@@ -141,6 +144,58 @@ const CocktailDetail: React.FC = () => {
       setIsBookmarked(Math.random() > 0.5);
     }, 300);
   }, []);
+
+  // Affichage pendant le chargement
+  if (loading) {
+    return (
+      <div className="bg-gray-50 min-h-screen flex justify-center items-center">
+        <div className="text-center">
+          <DotsLoading />
+          <p className="mt-4 text-gray-600">Chargement du cocktail...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Affichage en cas d'erreur
+  if (error || !cocktail) {
+    return (
+      <div className="bg-gray-50 min-h-screen flex justify-center items-center">
+        <div className="text-center">
+          <div className="text-red-500 mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+          </div>
+          <h2 className="text-xl font-bold mb-2">Impossible de charger le cocktail</h2>
+          <p className="text-gray-600">{error || "Veuillez réessayer plus tard"}</p>
+          <Link to="/recipes" className="mt-6 inline-block bg-primary text-white px-4 py-2 rounded-lg">
+            Retour à la liste
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // Enrichir les données d'ingrédients pour correspondre à notre interface d'affichage
+  const enrichedIngredients = cocktail.ingredients.map(ing => ({
+    ...ing,
+    quantity: 2, // Valeur par défaut
+    baseQuantity: 2, // Valeur par défaut
+    unit: "oz" as const, // Valeur par défaut
+  }));
+
+  // Mise à jour des quantités en fonction des servings et de l'unité
+  const updatedIngredients = enrichedIngredients.map((ing) => ({
+    ...ing,
+    quantity: +convertUnit(
+      convertUnit(ing.baseQuantity, ing.unit, "oz") * servings,
+      "oz",
+      unit
+    ).toFixed(2),
+  }));
 
   return (
     <div className="bg-gray-50 min-h-screen">
@@ -191,14 +246,14 @@ const CocktailDetail: React.FC = () => {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
           <div>
             <h1 className="text-4xl font-bold text-primary mb-2">
-              [{id}] {cocktail.name} 
+              {cocktail.name}
             </h1>
             <p className="text-gray-600">{cocktail.description}</p>
           </div>
           <div className="flex items-center gap-2 mt-4 md:mt-0">
-            {cocktail.types.map((type, index) => (
+            {cocktail.types.map((type) => (
               <span
-                key={index}
+                key={type.id}
                 className="text-sm bg-primary/10 text-primary px-3 py-1 rounded-full flex items-center gap-1"
               >
                 {type.emoji} {type.name}
@@ -262,19 +317,19 @@ const CocktailDetail: React.FC = () => {
               <div className="grid grid-cols-3 gap-4">
                 <div className="text-center">
                   <p className="text-2xl font-bold text-primary">
-                    {cocktail.nutritionalInfo.calories}
+                    {cocktail.calories}
                   </p>
                   <p className="text-sm text-gray-500">Calories</p>
                 </div>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-primary">
-                    {cocktail.nutritionalInfo.alcohol}
+                    {cocktail.alcoholPercentage}
                   </p>
                   <p className="text-sm text-gray-500">Alcool</p>
                 </div>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-primary">
-                    {cocktail.nutritionalInfo.sugar}
+                    {cocktail.sugar}
                   </p>
                   <p className="text-sm text-gray-500">Sucre</p>
                 </div>
@@ -379,111 +434,50 @@ const CocktailDetail: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Section ingrédients principaux */}
+                    {/* Section ingrédients */}
                     <div className="mb-6">
                       <h3 className="text-lg font-medium text-primary mb-3">
                         Ingrédients
                       </h3>
-                      {updatedIngredients
-                        .filter(
-                          (ingredient) =>
-                            !ingredient.role || ingredient.role !== "Garniture"
-                        )
-                        .map((ingredient, index) => (
-                          <div
-                            key={index}
-                              className="flex justify-between items-center p-4 rounded-xl mb-4 border border-gray-100 hover:border-secondary/20 hover:bg-secondary/5 transition"
-                          >
-                            <div>
-                              <p className="font-medium">{ingredient.name}</p>
-                              {ingredient.parent && (
-                                <p className="text-sm text-gray-500">
-                                  Idéalement {ingredient.parent}
-                                </p>
-                              )}
-                            </div>
-                            <span className="text-primary font-semibold">
-                              {ingredient.quantity} {unit}
-                            </span>
+                      {updatedIngredients.map((ingredient) => (
+                        <div
+                          key={ingredient.id}
+                          className="flex justify-between items-center p-4 rounded-xl mb-4 border border-gray-100 hover:border-secondary/20 hover:bg-secondary/5 transition"
+                        >
+                          <div>
+                            <p className="font-medium">{ingredient.name}</p>
+                            {ingredient.parent && (
+                              <p className="text-sm text-gray-500">
+                                Idéalement {ingredient.parent}
+                              </p>
+                            )}
                           </div>
-                        ))}
+                          <span className="text-primary font-semibold">
+                            {ingredient.quantity} {unit}
+                          </span>
+                        </div>
+                      ))}
                     </div>
-
-                    {/* Section garnitures */}
-                    {updatedIngredients.some(
-                      (ingredient) => ingredient.role === "Garniture"
-                    ) && (
-                      <div>
-                        <h3 className="text-lg font-medium text-primary mb-3">
-                          Garnitures
-                        </h3>
-                        {updatedIngredients
-                          .filter(
-                            (ingredient) => ingredient.role === "Garniture"
-                          )
-                          .map((ingredient, index) => {
-                            // Calculer la quantité pour les garnitures en fonction du nombre de personnes
-                            const garnishQuantity = Math.max(
-                              1,
-                              Math.round(ingredient.baseQuantity * servings)
-                            );
-
-                            // Déterminer le style de présentation (rondelle, zeste, quartier, etc.)
-                            const presentationStyle =
-                              ingredient.style || "pièce";
-
-                            // Formater le texte de la quantité avec le style de présentation
-                            const displayText =
-                              garnishQuantity > 1
-                                ? `${garnishQuantity} ${presentationStyle}s`
-                                : `${garnishQuantity} ${presentationStyle}`;
-
-                            return (
-                              <div
-                                key={index}
-                                className="flex justify-between items-center p-4 rounded-xl mb-4 border border-gray-100 hover:border-secondary/20 hover:bg-secondary/5 transition"
-                              >
-                                <div>
-                                  <p className="font-medium">
-                                    {ingredient.name}
-                                  </p>
-                                  {ingredient.parent && (
-                                    <p className="text-sm text-gray-500">
-                                      Idéalement {ingredient.parent}
-                                    </p>
-                                  )}
-                                </div>
-                                <span className="text-primary font-semibold">
-                                  {displayText}
-                                </span>
-                              </div>
-                            );
-                          })}
-                      </div>
-                    )}
                   </div>
                 )}
                 {/* Onglet préparation */}
                 {activeTab === "preparation" && (
                   <div>
-                    {cocktail.preparationSteps.map((step, index) => (
-                      <div
-                        key={index}
-                        className="flex items-start gap-4 p-4 rounded-xl mb-4 border border-gray-100 hover:border-primary/20 hover:bg-primary/5 transition"
-                      >
-                        <div className="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1">
-                          {index + 1}
+                    {cocktail.preparationSteps
+                      .sort((a, b) => a.stepOrder - b.stepOrder)
+                      .map((step) => (
+                        <div
+                          key={step.id}
+                          className="flex items-start gap-4 p-4 rounded-xl mb-4 border border-gray-100 hover:border-primary/20 hover:bg-primary/5 transition"
+                        >
+                          <div className="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1">
+                            {step.stepOrder}
+                          </div>
+                          <div>
+                            <p>{step.description}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p>{step}</p>
-                          {index === cocktail.preparationSteps.length - 1 && (
-                            <p className="text-sm text-gray-500 mt-2">
-                              {cocktail.preparationDetails}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    ))}
+                      ))}
                   </div>
                 )}
                 {/* Onglet astuces */}
@@ -492,35 +486,39 @@ const CocktailDetail: React.FC = () => {
                     <h3 className="text-lg font-medium text-primary mb-4">
                       Conseils du bartender
                     </h3>
-                    {cocktail.tips.map((tip, index) => (
+                    {cocktail.tips.map((tip) => (
                       <div
-                        key={index}
+                        key={tip.id}
                         className="flex items-start gap-4 p-4 rounded-xl mb-4 border border-gray-100 hover:border-primary/20 hover:bg-primary/5 transition"
                       >
                         <Leaf
                           size={20}
                           className="text-primary flex-shrink-0 mt-1"
                         />
-                        <p>{tip}</p>
+                        <p>{tip.tip}</p>
                       </div>
                     ))}
 
-                    <h3 className="text-lg font-medium text-primary mb-4 mt-6">
-                      Variantes
-                    </h3>
-                    {cocktail.variants.map((variant, index) => (
-                      <div
-                        key={index}
-                        className="p-4 rounded-xl mb-4 border border-gray-100 hover:border-primary/20 hover:bg-primary/5 transition"
-                      >
-                        <p className="font-medium text-primary">
-                          {variant.name}
-                        </p>
-                        <p className="text-gray-600 mt-1">
-                          {variant.description}
-                        </p>
-                      </div>
-                    ))}
+                    {cocktail.variants && cocktail.variants.length > 0 && (
+                      <>
+                        <h3 className="text-lg font-medium text-primary mb-4 mt-6">
+                          Variantes
+                        </h3>
+                        {cocktail.variants.map((variant, index) => (
+                          <div
+                            key={index}
+                            className="p-4 rounded-xl mb-4 border border-gray-100 hover:border-primary/20 hover:bg-primary/5 transition"
+                          >
+                            <p className="font-medium text-primary">
+                              {variant.name}
+                            </p>
+                            <p className="text-gray-600 mt-1">
+                              {variant.description}
+                            </p>
+                          </div>
+                        ))}
+                      </>
+                    )}
                   </div>
                 )}
               </div>
