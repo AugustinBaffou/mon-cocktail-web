@@ -138,8 +138,8 @@ const CocktailList: React.FC = () => {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      <div className="sticky top-0 z-10 bg-white shadow-sm">
+    <div className="bg-gray-50 grow">
+      <div className="sticky top-[72px] z-10 bg-white shadow-sm">
         <div className="container mx-auto px-4 py-3">
           <h1 className="text-2xl font-bold text-primary mb-4">Nos Cocktails</h1>
           
@@ -258,7 +258,7 @@ const CocktailList: React.FC = () => {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
             {filteredCocktails.map((cocktail) => (
               <Link
                 to={`/cocktails/${cocktail.id}`}

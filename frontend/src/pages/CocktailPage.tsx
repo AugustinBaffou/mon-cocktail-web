@@ -199,7 +199,7 @@ const CocktailDetail: React.FC = () => {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      <div className="sticky top-0 z-10 bg-white shadow-sm">
+      <div className="sticky top-[72px] top-0 z-10 bg-white shadow-sm">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           <Link
             to="/recipes"

@@ -26,7 +26,7 @@ const Home: React.FC = () => {
         {/* Boutons d'action */}
         <div className="mt-8 flex flex-col gap-4 w-full">
           <button 
-            onClick={() => navigate("/recipes")} 
+            onClick={() => navigate("/cocktails")} 
             className="bg-primary text-white py-3 px-6 rounded-full text-lg flex items-center justify-center gap-2 hover:bg-opacity-90 transition shadow-md"
           >
             <Search size={20} />
