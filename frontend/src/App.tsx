@@ -1,6 +1,5 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Recipes from "./pages/Recipes";
 import Home from "./pages/Home";
 import Surprise from "./pages/Surprise";
 import NavBar from "./components/NavBar";
@@ -10,6 +9,7 @@ import Login from "./pages/Login";
 import CocktailDetail from "./pages/CocktailPage";
 import ResetPasswordCode from "./pages/ResetPasswordCode";
 import ResetPasswordConfirm from "./pages/ResetPasswordConfirm";
+import CocktailList from "./pages/CocktailList";
 
 const App: React.FC = () => {
   return (
@@ -18,12 +18,12 @@ const App: React.FC = () => {
         <NavBar />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/recipes" element={<Recipes />} />
           <Route path="/surprise" element={<Surprise />} />
           <Route path="/register" element={<Register />} />
           <Route path="/verify" element={<Verification />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/cocktail" element={<CocktailDetail />} />
+          <Route path="/cocktails" element={<CocktailList />} />
+          <Route path="/cocktails/:id" element={<CocktailDetail />} />
           <Route path="/forgot-password" element={<ResetPasswordCode />} />
           <Route path="/password-reset-confirm" element={<ResetPasswordConfirm />} />
         </Routes>

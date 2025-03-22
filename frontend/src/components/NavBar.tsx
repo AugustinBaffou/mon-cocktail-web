@@ -53,8 +53,8 @@ const Navbar: React.FC = () => {
               <span>Accueil</span>
             </Link>
             <Link 
-              to="/recipes" 
-              className={`flex items-center gap-1 hover:text-secondary transition ${isActive('/recipes') ? 'text-secondary font-medium' : ''}`}
+              to="/cocktails" 
+              className={`flex items-center gap-1 hover:text-secondary transition ${isActive('/cocktails') ? 'text-secondary font-medium' : ''}`}
             >
               <Search size={18} />
               <span>Recettes</span>
@@ -126,8 +126,8 @@ const Navbar: React.FC = () => {
               <span>Accueil</span>
             </Link>
             <Link 
-              to="/recipes" 
-              className={`flex items-center gap-2 text-lg ${isActive('/recipes') ? 'text-secondary font-medium' : 'text-white'}`}
+              to="/cocktails" 
+              className={`flex items-center gap-2 text-lg ${isActive('/cocktails') ? 'text-secondary font-medium' : 'text-white'}`}
               onClick={closeMenu}
             >
               <Search size={20} />
