@@ -4,8 +4,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.augustinbaffou.mon_cocktail.dtos.CocktailSummary;
 import com.augustinbaffou.mon_cocktail.entities.Cocktail;
 import com.augustinbaffou.mon_cocktail.services.CocktailService;
 
@@ -29,5 +31,17 @@ public class CocktailController {
     @GetMapping
     public ResponseEntity<List<Cocktail>> getAllCocktails() {
         return ResponseEntity.ok(cocktailService.getAllCocktails());
+    }
+
+    @GetMapping("/summaries")
+    public List<CocktailSummary> getAllCocktailSummaries() {
+        return cocktailService.getAllCocktailSummaries();
+    }
+    
+    @GetMapping("/search")
+    public List<CocktailSummary> searchCocktails(
+            @RequestParam(required = false) String query,
+            @RequestParam(required = false) String type) {
+        return cocktailService.searchCocktails(query, type);
     }
 }
