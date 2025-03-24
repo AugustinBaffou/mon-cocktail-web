@@ -1,4 +1,4 @@
-name: Build and deploy JAR app to Azure Web App - mon-cocktail-dev-java-app
+name: Build and deploy JAR app to Azure Web App - mon-cocktail-dev-api
 
 on:
   push:
@@ -48,17 +48,10 @@ jobs:
         with:
           name: java-app
 
-      - name: Azure Login
-        uses: Azure/login@v2.2.0
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
       - name: Deploy to Azure Web App
-        id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'mon-cocktail-dev-java-app'
+          app-name: 'mon-cocktail-dev-api'
           slot-name: 'Production'
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: ${{ github.workspace }}/backend/*.jar
