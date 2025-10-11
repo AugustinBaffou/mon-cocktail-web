@@ -1,14 +1,13 @@
-# Étape 1 : image de base Java 21
-FROM eclipse-temurin:21-jdk
-
-# Étape 2 : dossier de travail dans le conteneur
+# Étape 1 : build Maven
+FROM maven:3.9.4-eclipse-temurin-21 AS build
 WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
 
-# Étape 3 : copier le jar de ton app dans le conteneur
-COPY target/*.jar app.jar
-
-# Étape 4 : exposer le port de ton application (par défaut Spring Boot = 8080)
+# Étape 2 : runtime Java
+FROM eclipse-temurin:21-jdk
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
-
-# Étape 5 : lancer l'application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java","-jar","app.jar"]
