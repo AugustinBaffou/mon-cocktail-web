@@ -65,9 +65,9 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Autoriser uniquement votre frontend local
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE")); // Autoriser uniquement les méthodes nécessaires
-        configuration.setAllowedHeaders(List.of("Content-Type", "Authorization")); // Autoriser uniquement les en-têtes nécessaires
+        configuration.setAllowedOrigins(List.of("http://localhost:5173", "https://moncocktail.onrender.com/"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+        configuration.setAllowedHeaders(List.of("Content-Type", "Authorization"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
