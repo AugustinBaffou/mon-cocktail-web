@@ -5,6 +5,8 @@ import { RefreshCw, Key, Mail } from "lucide-react";
 import DotsSeparator from "../components/DotsSeparator";
 
 const PasswordResetConfirm: React.FC = () => {
+  const API_URL = import.meta.env.VITE_API_URL;;
+  
   const [resetCode, setResetCode] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -33,7 +35,7 @@ const PasswordResetConfirm: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      await axios.post("http://localhost:8080/auth/password-reset-confirm", {
+      await axios.post(`${API_URL}/auth/password-reset-confirm`, {
         email,
         resetCode,
         newPassword

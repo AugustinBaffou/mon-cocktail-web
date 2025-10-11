@@ -6,6 +6,8 @@ import { LogIn, Mail, Key } from "lucide-react";
 import DotsSeparator from "../components/DotsSeparator";
 
 const Login: React.FC = () => {
+  const API_URL = import.meta.env.VITE_API_URL;;
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -26,7 +28,7 @@ const Login: React.FC = () => {
 
     try {
       // Envoyer les données de connexion au backend
-      const response = await axios.post("http://localhost:8080/auth/login", {
+      const response = await axios.post(`${API_URL}/auth/login`, {
         email: formData.email,
         password: formData.password,
       });

@@ -28,13 +28,14 @@ const CocktailList: React.FC = () => {
   const [sortBy, setSortBy] = useState<"name" | "preparationTime" | "difficulty">("name");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [showFilters, setShowFilters] = useState(false);
+  const API_URL = import.meta.env.VITE_API_URL;;
 
   // Récupérer la liste des cocktails
   useEffect(() => {
     const fetchCocktails = async () => {
       setLoading(true);
       try {
-        const response = await fetch("http://localhost:8080/public/cocktails/summaries");
+        const response = await fetch(`${API_URL}/public/cocktails/summaries`);
         if (!response.ok) {
           throw new Error(`Erreur HTTP ${response.status}`);
         }

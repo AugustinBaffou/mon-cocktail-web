@@ -5,6 +5,8 @@ import { CheckCircle, Mail, RefreshCw } from "lucide-react";
 import DotsSeparator from "../components/DotsSeparator";
 
 const Verification: React.FC = () => {
+  const API_URL = import.meta.env.VITE_API_URL;;
+
   const [verificationCode, setVerificationCode] = useState("");
   const [error, setError] = useState("");
   const [isResending, setIsResending] = useState(false);
@@ -26,7 +28,7 @@ const Verification: React.FC = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:8080/auth/verify", {
+      const response = await axios.post(`${API_URL}/auth/verify`, {
         email,
         verificationCode,
       });
@@ -48,7 +50,7 @@ const Verification: React.FC = () => {
     setIsResending(true);
 
     try {
-      await axios.post("http://localhost:8080/auth/resend", null, { params: { email }});
+      await axios.post(`${API_URL}/auth/resend`, null, { params: { email }});
     } catch (error) {
       console.error("Erreur lors du renvoi du code:", error);
       setError("Impossible de renvoyer le code. Veuillez réessayer plus tard.");

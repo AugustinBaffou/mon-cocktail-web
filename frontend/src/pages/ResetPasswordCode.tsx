@@ -5,6 +5,8 @@ import { RefreshCw, Key, Mail } from "lucide-react";
 import DotsSeparator from "../components/DotsSeparator";
 
 const PasswordResetRequest: React.FC = () => {
+  const API_URL = import.meta.env.VITE_API_URL;;
+
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -21,7 +23,7 @@ const PasswordResetRequest: React.FC = () => {
     setError("");
 
     try {
-      await axios.post("http://localhost:8080/auth/password-reset-request", { email });
+      await axios.post(`${API_URL}/auth/password-reset-request`, { email });
       navigate("/password-reset-confirm", { state: { email } });
     } catch (error) {
       console.error("Erreur lors de la demande de réinitialisation:", error);

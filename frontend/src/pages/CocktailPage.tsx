@@ -71,6 +71,8 @@ interface Cocktail {
 }
 
 const CocktailDetail: React.FC = () => {
+  const API_URL = import.meta.env.VITE_API_URL;;
+
   const [servings, setServings] = useState(1);
   const { id } = useParams(); // Récupère l'id du cocktail depuis l'URL
   const [unit, setUnit] = useState<"oz" | "cl" | "part">("oz");
@@ -119,7 +121,7 @@ const CocktailDetail: React.FC = () => {
     const fetchCocktail = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`http://localhost:8080/public/cocktails/${id}`);
+        const response = await fetch(`${API_URL}/public/cocktails/${id}`);
         if (!response.ok) {
           throw new Error(`Erreur HTTP ${response.status}`);
         }
