@@ -173,7 +173,7 @@ const CocktailDetail: React.FC = () => {
           </div>
           <h2 className="text-xl font-bold mb-2">Impossible de charger le cocktail</h2>
           <p className="text-gray-600">{error || "Veuillez réessayer plus tard"}</p>
-          <Link to="/recipes" className="mt-6 inline-block bg-primary text-white px-4 py-2 rounded-lg">
+          <Link to="/cocktails" className="mt-6 inline-block bg-primary text-white px-4 py-2 rounded-lg">
             Retour à la liste
           </Link>
         </div>
@@ -204,7 +204,7 @@ const CocktailDetail: React.FC = () => {
       <div className="sticky top-[72px] top-0 z-10 bg-white shadow-sm">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           <Link
-            to="/recipes"
+            to="/cocktails"
             className="flex items-center gap-2 text-primary hover:text-secondary transition"
           >
             <ArrowLeft size={20} />
