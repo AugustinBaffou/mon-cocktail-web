@@ -4,9 +4,11 @@ import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { LogIn, Mail, Key } from "lucide-react";
 import DotsSeparator from "../components/DotsSeparator";
+import DotsLoading from "../components/DotsLoading";
 
 const Login: React.FC = () => {
-  const API_URL = import.meta.env.VITE_API_URL;;
+  const API_URL = import.meta.env.VITE_API_URL;
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -26,6 +28,8 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    setLoading(true);
+
     try {
       // Envoyer les données de connexion au backend
       const response = await axios.post(`${API_URL}/auth/login`, {
@@ -40,6 +44,8 @@ const Login: React.FC = () => {
       Cookies.set("authToken", token, { expires: new Date(Date.now() + expiresIn) });
 
       // Rediriger l'utilisateur vers une autre page, par exemple la page d'accueil
+
+      setLoading(false);
       navigate("/");
     } catch (error) {
       console.error("Erreur lors de la connexion:", error);
@@ -116,12 +122,17 @@ const Login: React.FC = () => {
             </div>
           )}
           
-          <button
-            type="submit"
-            className="w-full text-white bg-primary hover:bg-opacity-90 focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-3 text-center transition shadow-md"
-          >
-            Se connecter
-          </button>
+          {loading ? (
+            <DotsLoading />
+          ) : (
+            <button
+              type="submit"
+              className="w-full text-white bg-primary hover:bg-opacity-90 focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-3 text-center transition shadow-md"
+            >
+              Se connecter
+            </button>
+          )}
+
           
           <div className="mt-4 text-center">
             <p className="text-sm text-gray-600">
