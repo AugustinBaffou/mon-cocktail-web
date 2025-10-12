@@ -44,12 +44,12 @@ const Login: React.FC = () => {
       Cookies.set("authToken", token, { expires: new Date(Date.now() + expiresIn) });
 
       // Rediriger l'utilisateur vers une autre page, par exemple la page d'accueil
-
-      setLoading(false);
       navigate("/");
     } catch (error) {
       console.error("Erreur lors de la connexion:", error);
       setError("Email ou mot de passe incorrect. Veuillez réessayer.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -68,89 +68,91 @@ const Login: React.FC = () => {
           </p>
         </div>
         
-        {/* Formulaire */}
-        <form onSubmit={handleSubmit} className="mt-8 bg-white p-6 rounded-xl shadow-md">
-          <div className="mb-5">
-            <label
-              htmlFor="email"
-              className="block mb-2 text-sm font-medium text-primary"
-            >
-              Votre email
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                <Mail size={18} className="text-gray-400" />
+      {loading ? (
+        <div className="flex justify-center items-center h-48">
+          <DotsLoading message={`Connexion à ${formData.email}`} />
+        </div>
+      ) : (
+        <>
+          {/* Formulaire */}
+          <form onSubmit={handleSubmit} className="mt-8 bg-white p-6 rounded-xl shadow-md">
+            <div className="mb-5">
+              <label
+                htmlFor="email"
+                className="block mb-2 text-sm font-medium text-primary"
+              >
+                Votre email
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+                  <Mail size={18} className="text-gray-400" />
+                </div>
+                <input
+                  type="email"
+                  id="email"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-full ps-10 p-2.5 w-full focus:ring-2 focus:ring-secondary focus:border-secondary"
+                  placeholder="name@example.com"
+                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                />
               </div>
-              <input
-                type="email"
-                id="email"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-full ps-10 p-2.5 w-full focus:ring-2 focus:ring-secondary focus:border-secondary"
-                placeholder="name@example.com"
-                required
-                value={formData.email}
-                onChange={handleChange}
-              />
             </div>
-          </div>
-          
-          <div className="mb-5">
-            <label
-              htmlFor="password"
-              className="block mb-2 text-sm font-medium text-primary"
-            >
-              Votre mot de passe
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                <Key size={18} className="text-gray-400" />
+
+            <div className="mb-5">
+              <label
+                htmlFor="password"
+                className="block mb-2 text-sm font-medium text-primary"
+              >
+                Votre mot de passe
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+                  <Key size={18} className="text-gray-400" />
+                </div>
+                <input
+                  type="password"
+                  id="password"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-full ps-10 p-2.5 w-full focus:ring-2 focus:ring-secondary focus:border-secondary"
+                  placeholder="••••••••"
+                  required
+                  value={formData.password}
+                  onChange={handleChange}
+                />
               </div>
-              <input
-                type="password"
-                id="password"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-full ps-10 p-2.5 w-full focus:ring-2 focus:ring-secondary focus:border-secondary"
-                placeholder="••••••••"
-                required
-                value={formData.password}
-                onChange={handleChange}
-              />
             </div>
-          </div>
-          
-          {error && (
-            <div className="p-4 mb-5 text-sm text-red-800 rounded-lg bg-red-50">
-              <span className="font-medium">Erreur :</span> {error}
-            </div>
-          )}
-          
-          {loading ? (
-            <DotsLoading />
-          ) : (
+
+            {error && (
+              <div className="p-4 mb-5 text-sm text-red-800 rounded-lg bg-red-50">
+                <span className="font-medium">Erreur :</span> {error}
+              </div>
+            )}
+
             <button
               type="submit"
               className="w-full text-white bg-primary hover:bg-opacity-90 focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-3 text-center transition shadow-md"
             >
               Se connecter
             </button>
-          )}
 
-          
-          <div className="mt-4 text-center">
-            <p className="text-sm text-gray-600">
-              Pas encore de compte ?{" "}
-              <a href="/register" className="text-secondary hover:underline font-medium">
-                Inscrivez-vous
+            <div className="mt-4 text-center">
+              <p className="text-sm text-gray-600">
+                Pas encore de compte ?{" "}
+                <a href="/register" className="text-secondary hover:underline font-medium">
+                  Inscrivez-vous
+                </a>
+              </p>
+            </div>
+
+            <div className="mt-4 text-center">
+              <a href="/forgot-password" className="text-sm text-gray-600 hover:underline">
+                Mot de passe oublié ?
               </a>
-            </p>
-          </div>
-          
-          <div className="mt-4 text-center">
-            <a href="/forgot-password" className="text-sm text-gray-600 hover:underline">
-              Mot de passe oublié ?
-            </a>
-          </div>
-        </form>
-        
-        <DotsSeparator />
+            </div>
+          </form>
+          <DotsSeparator />
+        </>
+      )}
       </div>
     </div>
   );

@@ -112,8 +112,7 @@ const CocktailList: React.FC = () => {
     return (
       <div className="bg-gray-50 min-h-screen flex justify-center items-center">
         <div className="text-center">
-          <DotsLoading />
-          <p className="mt-4 text-gray-600">Chargement des cocktails...</p>
+          <DotsLoading message={`Chargement des cocktails.`}/>
         </div>
       </div>
     );
